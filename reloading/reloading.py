@@ -201,7 +201,7 @@ def isolate_function_def(funcname, tree):
     Also strips the reloading decorator from the function definition"""
     for node in ast.walk(tree):
         if (
-            isinstance(node, ast.FunctionDef)
+            (isinstance(node, ast.FunctionDef) or isinstance(node, ast.AsyncFunctionDef))
             and node.name == funcname
             and "reloading" in [
                 get_decorator_name_or_none(dec)
@@ -219,7 +219,7 @@ def get_function_def_code(fpath, fn):
     found = isolate_function_def(fn.__name__, tree)
     if not found:
         return None
-    compiled = compile(tree, filename="", mode="exec")
+    compiled = compile(tree, filename=fpath, mode="exec")
     return compiled
 
 

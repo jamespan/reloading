@@ -251,13 +251,7 @@ def _reloading_function(fn, every=1):
         if state["reloads"] % every == 0:
             state["func"] = get_reloaded_function(caller_globals, caller_locals, fpath, fn) or state["func"]
         state["reloads"] += 1
-        while True:
-            try:
-                result = state["func"](*args, **kwargs)
-                return result
-            except Exception:
-                handle_exception(fpath)
-                state["func"] = get_reloaded_function(caller_globals, caller_locals, fpath, fn) or state["func"]
+        return state["func"](*args, **kwargs)
 
     caller_locals[fn.__name__] = wrapped
     return wrapped
